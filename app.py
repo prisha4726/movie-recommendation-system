@@ -6,8 +6,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # -----------------------------
 # Load Dataset
 # -----------------------------
-movies = pd.read_csv("data/movies.csv")
-ratings = pd.read_csv("data/ratings.csv")
+movies = pd.read_csv("movies.csv")
+ratings = pd.read_csv("ratings.csv")
 
 # -----------------------------
 # Collaborative Filtering Setup
@@ -123,4 +123,5 @@ if st.button("Recommend"):
         for movie, score in results:
             st.write(f"{movie} (Score: {round(score,2)})")
     else:
+
         st.write("No recommendations found.")
