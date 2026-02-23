@@ -103,25 +103,68 @@ def hybrid_recommend(user_id, movie_title, alpha=0.7):
     return sorted_recommendations
 
 # -----------------------------
-# Streamlit UI
+# Netflix Style UI
 # -----------------------------
-st.title("🎬 Hybrid Movie Recommendation System")
 
-user_id = st.number_input("Enter User ID", min_value=1, step=1)
+st.set_page_config(layout="wide")
 
-movie_title = st.selectbox(
-    "Select a Movie",
-    movies['title'].values
-)
+# Custom CSS
+st.markdown("""
+    <style>
+    body {
+        background-color: #0e1117;
+        color: white;
+    }
+    .title {
+        font-size: 50px;
+        font-weight: bold;
+        color: #E50914;
+    }
+    .subtitle {
+        font-size: 20px;
+        color: #bbbbbb;
+    }
+    .movie-card {
+        background-color: #1c1f26;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-if st.button("Recommend"):
+st.markdown('<div class="title">NETFLIX RECOMMENDER</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Find your next favorite movie 🎬</div>', unsafe_allow_html=True)
+
+st.write("")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    user_id = st.number_input("User ID", min_value=1, step=1)
+
+with col2:
+    movie_title = st.selectbox("Pick a Movie", movies['title'].sort_values().unique())
+
+st.write("")
+
+if st.button("🍿 Get Recommendations"):
 
     results = hybrid_recommend(user_id, movie_title)
 
     if results:
-        st.subheader("⭐ Recommended Movies")
-        for movie, score in results:
-            st.write(f"{movie} (Score: {round(score,2)})")
-    else:
+        st.subheader("🔥 Recommended For You")
 
-        st.write("No recommendations found.")
+        cols = st.columns(5)
+
+        for i, (movie, score) in enumerate(results):
+            with cols[i % 5]:
+                st.markdown(f"""
+                    <div class="movie-card">
+                        <h4>{movie}</h4>
+                        <p>⭐ {round(score,2)}</p>
+                    </div>
+                """, unsafe_allow_html=True)
+    else:
+        st.warning("No recommendations found.")
